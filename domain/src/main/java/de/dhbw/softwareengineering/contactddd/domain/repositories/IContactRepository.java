@@ -2,13 +2,19 @@ package de.dhbw.softwareengineering.contactddd.domain.repositories;
 
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface IContactRepository {
 
-  // Sucht einen Kontakt anhand seiner ID
-  Optional<Contact> findById(ContactId id);
+    Optional<Contact> findById(ContactId id);
 
-  // Sucht Kontakte anhand des Namens (dies könnte eine Liste von Kontakten zurückgeben)
-  Optional<Contact> findByName(String name);
+    Optional<List<Contact>> findByName(String name);
+
+    List<Contact> getAllUsers();
+
+    Contact save(Contact contact);
+
+    void deleteContact(String contactId);
 }
