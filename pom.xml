@@ -18,10 +18,10 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>domain</module>
-        <module>application</module>
-        <module>plugins</module>
-        <module>adapters</module>
+        <module>3-domain</module>
+        <module>2-application</module>
+        <module>0-plugins</module>
+        <module>1-adapters</module>
     </modules>
 
     <properties>
