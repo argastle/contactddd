@@ -13,12 +13,10 @@ public class SocialMediaAccountEntityToSocialMediaAccountDTOMapper implements Fu
     }
 
     public SocialMediaAccountDTO map(SocialMediaAccount socialMediaAccount) {
-        if (socialMediaAccount == null) {
-            return null;
-        }
         return new SocialMediaAccountDTO(
                 socialMediaAccount.accountName(),
-                socialMediaAccount.platform(), socialMediaAccount.getUrl()
+                socialMediaAccount.platform(),
+                socialMediaAccount.getUrl()
         );
     }
 }
