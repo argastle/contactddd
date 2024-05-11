@@ -5,6 +5,7 @@ import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ public class Contact {
         this.name = name;
         this.email = validateEmail(email);
         this.phoneNumber = validatePhoneNumber(phoneNumber);
-        this.socialMediaAccounts = socialMediaAccounts;
+        this.socialMediaAccounts = socialMediaAccounts != null ? new HashSet<>(socialMediaAccounts) : new HashSet<>();
     }
 
     public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts) {

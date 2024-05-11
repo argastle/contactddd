@@ -24,9 +24,10 @@ public class ContactService {
     }
 
     public Contact createContact(CreateContactCommand command) {
-        Set<SocialMediaAccount> socialMediaAccounts = command.socialMediaAccountsInfos()
+        Set<SocialMediaAccount> socialMediaAccounts = Optional.ofNullable(command.socialMediaAccountsInfos())
+                .orElse(Set.of())
                 .stream()
-                .map(info -> new SocialMediaAccount(info.name(), Platform.valueOf(info.platform())))
+                .map(info -> new SocialMediaAccount(info.name(), info.platform()))
                 .collect(Collectors.toSet());
 
         Contact newContact = new Contact(command.name(), command.email(), command.phoneNumber(), socialMediaAccounts);
@@ -37,12 +38,29 @@ public class ContactService {
         return contactRepository.findById(new ContactId(id));
     }
 
+    public Optional<List<Contact>> findContactByName(String name) {
+        return contactRepository.findByName(name);
+    }
+
     public List<Contact> findAllContacts() {
         return contactRepository.getAllUsers();
     }
 
-    public Contact updateContact(Contact contact) {
-        return contactRepository.save(contact);
+    public Contact updateContact(String id, CreateContactCommand command) {
+        ContactId contactId = new ContactId(id);
+        Optional<Contact> contactOptional = contactRepository.findById(contactId);
+        if (contactOptional.isPresent()) {
+            Contact existingContact = contactOptional.get();
+            Set<SocialMediaAccount> socialMediaAccounts = Optional.ofNullable(command.socialMediaAccountsInfos())
+                    .orElse(Set.of())
+                    .stream()
+                    .map(info -> new SocialMediaAccount(info.name(), info.platform()))
+                    .collect(Collectors.toSet());
+            existingContact.updateContact(command.name(), command.email(), command.phoneNumber(), socialMediaAccounts);
+            return contactRepository.save(existingContact);
+        } else {
+            throw new IllegalArgumentException("Contact with id " + id + " not found.");
+        }
     }
 
     public void deleteContactById(String id) {

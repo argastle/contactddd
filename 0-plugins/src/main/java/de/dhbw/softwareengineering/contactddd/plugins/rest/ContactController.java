@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,24 +46,52 @@ public class ContactController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ContactDTO>> getAllContacts() {
+    public ResponseEntity<List<ContactDTO>> getAllContacts(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String order) {
+
+        Comparator<Contact> comparator;
+        if ("name".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(Contact::getName);
+        } else if ("email".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(Contact::getEmail);
+        } else if ("phoneNumber".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(Contact::getPhoneNumber);
+        } else {
+            comparator = Comparator.comparing(contact -> contact.getId().id());
+        }
+
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+
         List<ContactDTO> contacts = contactService.findAllContacts()
                 .stream()
+                .sorted(comparator)
                 .map(contactToDTO)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(contacts, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ContactDTO>> searchContactsByName(@RequestParam String name) {
+        Optional<List<Contact>> contacts = contactService.findContactByName(name);
+        return contacts.map(contactList -> {
+            List<ContactDTO> contactDTOs = contactList.stream()
+                    .map(contactToDTO)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(contactDTOs, HttpStatus.OK);
+        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<ContactDTO> updateContact(@PathVariable String id, @RequestBody ContactDTO contactDTO) {
-        return contactService.findContactById(id)
-                .map(existingContact -> {
-                    Contact updatedContact = contactDTOToEntityMapper.apply(contactDTO);
-                    updatedContact.setId(existingContact.getId());
-                    ContactDTO updatedContactDTO = contactToDTO.apply(contactService.updateContact(updatedContact));
-                    return new ResponseEntity<>(updatedContactDTO, HttpStatus.OK);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<ContactDTO> updateContact(@PathVariable String id, @RequestBody CreateContactCommand command) {
+        try {
+            Contact updatedContact = contactService.updateContact(id, command);
+            return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 
