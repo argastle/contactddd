@@ -24,7 +24,7 @@ public class ContactEntityToContactDTOMapper implements Function<Contact, Contac
                 .stream()
                 .map(new SocialMediaAccountEntityToSocialMediaAccountDTOMapper()::map)
                 .collect(Collectors.toSet());
-        return new ContactDTO(contact.getId().id(), contact.getName(), contact.getEmail(), contact.getPhoneNumber(), socialMediaAccounts);
+        return new ContactDTO(contact.getId().id(), contact.getName(), contact.getEmail(), contact.getPhoneNumber(), socialMediaAccounts, contact.getGroups());
     }
 }
 

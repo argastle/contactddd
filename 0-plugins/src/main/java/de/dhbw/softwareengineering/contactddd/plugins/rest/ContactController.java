@@ -84,6 +84,21 @@ public class ContactController {
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+
+    @GetMapping("/groups")
+    public ResponseEntity<List<ContactDTO>> getContactsByGroups(@RequestParam List<String> groups, @RequestParam(defaultValue = "or") String mode) {
+        List<Contact> contacts;
+        if ("and".equalsIgnoreCase(mode)) {
+            contacts = contactService.findContactsByAllGroups(groups);
+        } else {
+            contacts = contactService.findContactsByAnyGroup(groups);
+        }
+        List<ContactDTO> contactDTOs = contacts.stream()
+                .map(contactToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(contactDTOs, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ContactDTO> updateContact(@PathVariable String id, @RequestBody CreateContactCommand command) {
         try {
@@ -97,7 +112,7 @@ public class ContactController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContactById(@PathVariable String id) {
-        if (!contactService.findContactById(id).isPresent()) {
+        if (contactService.findContactById(id).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         contactService.deleteContactById(id);

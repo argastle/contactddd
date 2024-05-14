@@ -22,23 +22,26 @@ public class Contact {
 
     private Set<SocialMediaAccount> socialMediaAccounts;
 
-    public Contact(ContactId id, String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts) {
+    private Set<String> groups;
+
+    public Contact(ContactId id, String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups) {
         this.id = id;
         validateName(name);
         this.name = name;
         this.email = validateEmail(email);
         this.phoneNumber = validatePhoneNumber(phoneNumber);
         this.socialMediaAccounts = socialMediaAccounts != null ? new HashSet<>(socialMediaAccounts) : new HashSet<>();
+        this.groups = groups != null ? new HashSet<>(groups) : new HashSet<>();
     }
 
-    public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts) {
-        this(new ContactId(), name, email, phoneNumber, socialMediaAccounts);
+    public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups) {
+        this(new ContactId(), name, email, phoneNumber, socialMediaAccounts, groups);
     }
 
     public Contact() {
     }
 
-    public void updateContact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts) {
+    public void updateContact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups) {
 
         if (name != null && !name.isEmpty()) {
             this.name = validateName(name);
@@ -51,6 +54,9 @@ public class Contact {
         }
         if (socialMediaAccounts != null && !socialMediaAccounts.isEmpty()) {
             this.socialMediaAccounts = socialMediaAccounts;
+        }
+        if (groups != null && !groups.isEmpty()) {
+            this.groups = groups;
         }
     }
 
@@ -94,8 +100,16 @@ public class Contact {
         return socialMediaAccounts;
     }
 
-    public void addSocialMediaAccounts(SocialMediaAccount socialMediaAccounts) {
-        this.socialMediaAccounts.add(socialMediaAccounts);
+    public void setSocialMediaAccounts(Set<SocialMediaAccount> socialMediaAccounts) {
+        this.socialMediaAccounts = socialMediaAccounts;
+    }
+
+    public Set<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<String> groups) {
+        this.groups = groups;
     }
 
     private String validateName(String name) {

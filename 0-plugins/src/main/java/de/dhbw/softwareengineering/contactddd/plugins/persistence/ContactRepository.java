@@ -47,9 +47,13 @@ public class ContactRepository implements IContactRepository {
         dataContactRepository.deleteById(contactId);
     }
 
+    @Override
+    public List<Contact> findContactsByAnyGroup(List<String> groups) {
+        return dataContactRepository.findByAnyGroup(groups);
+    }
 
-/**
- * In dem package landen die ganzen Bridges welche benutzt werden zur kommunikation
- * zwischen den schichten.
- */
+    @Override
+    public List<Contact> findContactsByAllGroups(List<String> groups) {
+        return dataContactRepository.findByAllGroups(groups);
+    }
 }

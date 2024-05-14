@@ -17,4 +17,8 @@ public interface IContactRepository {
     Contact save(Contact contact);
 
     void deleteContact(ContactId id);
+
+    List<Contact> findContactsByAnyGroup(List<String> group);
+
+    List<Contact> findContactsByAllGroups(List<String> group);
 }

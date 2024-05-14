@@ -23,6 +23,6 @@ public class ContactDTOToContactEntityMapper implements Function<ContactDTO, Con
                 .stream()
                 .map(new SocialMediaAccountDTOToSocialMediaAccountEntityMapper()::map)
                 .collect(Collectors.toSet());
-        return new Contact(new ContactId(contactDTO.id()), contactDTO.name(), contactDTO.email(), contactDTO.phoneNumber(), socialMediaAccounts);
+        return new Contact(new ContactId(contactDTO.id()), contactDTO.name(), contactDTO.email(), contactDTO.phoneNumber(), socialMediaAccounts, contactDTO.groups());
     }
 }

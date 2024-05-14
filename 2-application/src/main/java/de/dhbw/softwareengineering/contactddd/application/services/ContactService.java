@@ -1,7 +1,6 @@
 package de.dhbw.softwareengineering.contactddd.application.services;
 
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
-import de.dhbw.softwareengineering.contactddd.domain.values.Platform;
 import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;
 import de.dhbw.softwareengineering.contactddd.domain.repositories.IContactRepository;
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
@@ -30,7 +29,7 @@ public class ContactService {
                 .map(info -> new SocialMediaAccount(info.name(), info.platform()))
                 .collect(Collectors.toSet());
 
-        Contact newContact = new Contact(command.name(), command.email(), command.phoneNumber(), socialMediaAccounts);
+        Contact newContact = new Contact(command.name(), command.email(), command.phoneNumber(), socialMediaAccounts, command.groups());
         return contactRepository.save(newContact);
     }
 
@@ -40,6 +39,14 @@ public class ContactService {
 
     public Optional<List<Contact>> findContactByName(String name) {
         return contactRepository.findByName(name);
+    }
+
+    public List<Contact> findContactsByAnyGroup(List<String> group) {
+        return contactRepository.findContactsByAnyGroup(group);
+    }
+
+    public List<Contact> findContactsByAllGroups(List<String> groups) {
+        return contactRepository.findContactsByAllGroups(groups);
     }
 
     public List<Contact> findAllContacts() {
@@ -56,7 +63,7 @@ public class ContactService {
                     .stream()
                     .map(info -> new SocialMediaAccount(info.name(), info.platform()))
                     .collect(Collectors.toSet());
-            existingContact.updateContact(command.name(), command.email(), command.phoneNumber(), socialMediaAccounts);
+            existingContact.updateContact(command.name(), command.email(), command.phoneNumber(), socialMediaAccounts,command.groups());
             return contactRepository.save(existingContact);
         } else {
             throw new IllegalArgumentException("Contact with id " + id + " not found.");
