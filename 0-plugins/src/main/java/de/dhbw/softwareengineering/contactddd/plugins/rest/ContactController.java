@@ -1,11 +1,11 @@
 package de.dhbw.softwareengineering.contactddd.plugins.rest;
 
 import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.ContactDTO;
-import de.dhbw.softwareengineering.contactddd.adapters.representations.mappers.ContactDTOToContactEntityMapper;
 import de.dhbw.softwareengineering.contactddd.adapters.representations.mappers.ContactEntityToContactDTOMapper;
 import de.dhbw.softwareengineering.contactddd.application.services.ContactService;
 import de.dhbw.softwareengineering.contactddd.application.services.CreateContactCommand;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
+import de.dhbw.softwareengineering.contactddd.domain.values.SpecialDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,11 @@ public class ContactController {
     private final ContactService contactService;
 
     private final ContactEntityToContactDTOMapper contactToDTO;
-    private final ContactDTOToContactEntityMapper contactDTOToEntityMapper;
 
     @Autowired
-    public ContactController(final ContactService contactService, final ContactEntityToContactDTOMapper contactToDTO, ContactDTOToContactEntityMapper contactDTOToEntityMapper) {
+    public ContactController(final ContactService contactService, final ContactEntityToContactDTOMapper contactToDTO) {
         this.contactService = contactService;
         this.contactToDTO = contactToDTO;
-        this.contactDTOToEntityMapper = contactDTOToEntityMapper;
     }
 
     @PostMapping
@@ -58,7 +56,7 @@ public class ContactController {
         } else if ("phoneNumber".equalsIgnoreCase(sortBy)) {
             comparator = Comparator.comparing(Contact::getPhoneNumber);
         } else {
-            comparator = Comparator.comparing(contact -> contact.getId().id());
+            comparator = Comparator.comparing(contact -> contact.getContactId().id());
         }
 
         if ("desc".equalsIgnoreCase(order)) {
@@ -109,6 +107,47 @@ public class ContactController {
         }
     }
 
+    @PatchMapping("/{contactId}/updateName")
+    public ResponseEntity<Void> updateContactName(@PathVariable String contactId, @RequestParam String newName) {
+        contactService.updateContactName(contactId, newName);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{contactId}/updateEmail")
+    public ResponseEntity<Void> updateContactEmail(@PathVariable String contactId, @RequestParam String newEmail) {
+        contactService.updateContactEmail(contactId, newEmail);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{contactId}/updatePhoneNumber")
+    public ResponseEntity<Void> updateContactPhoneNumber(@PathVariable String contactId, @RequestParam String newPhoneNumber) {
+        contactService.updateContactPhoneNumber(contactId, newPhoneNumber);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{contactId}/addGroup")
+    public ResponseEntity<Void> addGroupToContact(@PathVariable String contactId, @RequestParam String group) {
+        contactService.addGroupToContact(contactId, group);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{contactId}/removeGroup")
+    public ResponseEntity<Void> removeGroupFromContact(@PathVariable String contactId, @RequestParam String group) {
+        contactService.removeGroupFromContact(contactId, group);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{contactId}/addSpecialDate")
+    public ResponseEntity<Void> addSpecialDateToContact(@PathVariable String contactId, @RequestBody SpecialDate specialDate) {
+        contactService.addSpecialDateToContact(contactId, specialDate);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{contactId}/removeSpecialDate")
+    public ResponseEntity<Void> removeSpecialDateFromContact(@PathVariable String contactId, @RequestParam String description) {
+        contactService.removeSpecialDateFromContact(contactId, description);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContactById(@PathVariable String id) {

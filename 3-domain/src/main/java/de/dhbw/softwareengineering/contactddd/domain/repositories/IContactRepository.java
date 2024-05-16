@@ -12,7 +12,7 @@ public interface IContactRepository {
 
     Optional<List<Contact>> findByName(String name);
 
-    List<Contact> getAllUsers();
+    List<Contact> getAllContacts();
 
     Contact save(Contact contact);
 

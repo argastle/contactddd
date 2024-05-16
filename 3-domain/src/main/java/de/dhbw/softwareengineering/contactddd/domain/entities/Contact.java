@@ -2,9 +2,13 @@ package de.dhbw.softwareengineering.contactddd.domain.entities;
 
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
 import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;
+import de.dhbw.softwareengineering.contactddd.domain.values.SpecialDate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -12,7 +16,7 @@ import java.util.regex.Pattern;
 @Document(collection = "contacts")
 public class Contact {
     @Id
-    private ContactId id;
+    private ContactId contactId;
 
     private String name;
 
@@ -24,24 +28,33 @@ public class Contact {
 
     private Set<String> groups;
 
-    public Contact(ContactId id, String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups) {
-        this.id = id;
-        validateName(name);
-        this.name = name;
+    private Set<SpecialDate> specialDates;
+
+    @CreatedDate
+    private Date createdDate;
+
+    @LastModifiedDate
+    private Date lastModifiedDate;
+
+
+    public Contact(ContactId contactId, String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {
+        this.contactId = contactId;
+        this.name = validateName(name);
         this.email = validateEmail(email);
         this.phoneNumber = validatePhoneNumber(phoneNumber);
         this.socialMediaAccounts = socialMediaAccounts != null ? new HashSet<>(socialMediaAccounts) : new HashSet<>();
         this.groups = groups != null ? new HashSet<>(groups) : new HashSet<>();
+        this.specialDates = specialDates != null ? new HashSet<>(specialDates) : new HashSet<>();
     }
 
-    public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups) {
-        this(new ContactId(), name, email, phoneNumber, socialMediaAccounts, groups);
+    public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {
+        this(new ContactId(), name, email, phoneNumber, socialMediaAccounts, groups, specialDates);
     }
 
     public Contact() {
     }
 
-    public void updateContact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups) {
+    public void updateContact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {
 
         if (name != null && !name.isEmpty()) {
             this.name = validateName(name);
@@ -58,42 +71,65 @@ public class Contact {
         if (groups != null && !groups.isEmpty()) {
             this.groups = groups;
         }
+        if (specialDates != null && !specialDates.isEmpty()) {
+            this.specialDates = specialDates;
+        }
     }
 
-    public ContactId getId() {
-        return id;
+    public void setName(String newName) {
+        this.name = validateName(newName);
     }
 
-    public void setId(ContactId id) {
-        this.id = id;
+    public void setEmail(String newEmail) {
+        this.email = validateEmail(newEmail);
+    }
+
+    public void setPhoneNumber(String newPhoneNumber) {
+        this.phoneNumber = validatePhoneNumber(newPhoneNumber);
+    }
+
+    public void addGroup(String group) {
+        this.groups.add(group);
+    }
+
+    public void removeGroup(String group) {
+        this.groups.remove(group);
+    }
+
+    public void addSpecialDate(SpecialDate specialDate) {
+        this.specialDates.add(specialDate);
+    }
+
+    public void removeSpecialDateByDescription(String description) {
+        this.specialDates.removeIf(specialDate -> specialDate.getDescription().equals(description));
+    }
+
+    public Set<SpecialDate> getSpecialDates() {
+        return specialDates;
+    }
+
+    public void setSpecialDates(Set<SpecialDate> specialDates) {
+        this.specialDates = specialDates;
+    }
+
+    public ContactId getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(ContactId contactId) {
+        this.contactId = contactId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-        if (!emailPattern.matcher(email).matches()) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-        this.email = email;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public Set<SocialMediaAccount> getSocialMediaAccounts() {
@@ -110,6 +146,14 @@ public class Contact {
 
     public void setGroups(Set<String> groups) {
         this.groups = groups;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
     private String validateName(String name) {

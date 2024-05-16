@@ -14,8 +14,8 @@ public class SocialMediaAccountEntityToSocialMediaAccountDTOMapper implements Fu
 
     public SocialMediaAccountDTO map(SocialMediaAccount socialMediaAccount) {
         return new SocialMediaAccountDTO(
-                socialMediaAccount.accountName(),
-                socialMediaAccount.platform(),
+                socialMediaAccount.getAccountName(),
+                socialMediaAccount.getPlatform(),
                 socialMediaAccount.getUrl()
         );
     }

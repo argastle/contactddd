@@ -32,13 +32,12 @@ public class ContactRepository implements IContactRepository {
     }
 
     @Override
-    public List<Contact> getAllUsers() {
+    public List<Contact> getAllContacts() {
         return dataContactRepository.findAll();
     }
 
     @Override
     public Contact save(Contact contact) {
-
         return dataContactRepository.save(contact);
     }
 
