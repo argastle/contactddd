@@ -27,6 +27,15 @@ public class ContactEntityToContactDTOMapper implements Function<Contact, Contac
                 .stream()
                 .map(new SpecialDateEntityToSpecialDateDTOMapper()::map)
                 .collect(Collectors.toSet());
-        return new ContactDTO(contact.getContactId().id(), contact.getName(), contact.getEmail(), contact.getPhoneNumber(), socialMediaAccounts, contact.getGroups(), specialDates);
+        return new ContactDTO(
+                contact.getContactId().id(),
+                contact.getName(),
+                contact.getEmail(),
+                contact.getPhoneNumber(),
+                socialMediaAccounts,
+                contact.getGroups(),
+                specialDates,
+                contact.getCreatedDate(),
+                contact.getLastModifiedDate());
     }
 }

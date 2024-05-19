@@ -6,6 +6,7 @@ import de.dhbw.softwareengineering.contactddd.domain.values.SpecialDate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Persistent;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @Document(collection = "contacts")
+@Persistent
 public class Contact {
     @Id
     private ContactId contactId;
@@ -30,7 +32,6 @@ public class Contact {
 
     private Set<SpecialDate> specialDates;
 
-    @CreatedDate
     private Date createdDate;
 
     @LastModifiedDate
@@ -45,6 +46,7 @@ public class Contact {
         this.socialMediaAccounts = socialMediaAccounts != null ? new HashSet<>(socialMediaAccounts) : new HashSet<>();
         this.groups = groups != null ? new HashSet<>(groups) : new HashSet<>();
         this.specialDates = specialDates != null ? new HashSet<>(specialDates) : new HashSet<>();
+        this.createdDate = new Date();
     }
 
     public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {

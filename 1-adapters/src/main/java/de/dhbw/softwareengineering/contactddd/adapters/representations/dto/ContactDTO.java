@@ -1,5 +1,6 @@
 package de.dhbw.softwareengineering.contactddd.adapters.representations.dto;
 
+import java.util.Date;
 import java.util.Set;
 
 public final class ContactDTO {
@@ -10,8 +11,10 @@ public final class ContactDTO {
     private Set<SocialMediaAccountDTO> socialMediaAccounts;
     private Set<String> groups;
     private Set<SpecialDateDTO> specialDates;
+    private Date createdDate;
+    private Date lastModifiedDate;
 
-    public ContactDTO(String id, String name, String email, String phoneNumber, Set<SocialMediaAccountDTO> socialMediaAccounts, Set<String> groups, Set<SpecialDateDTO> specialDates) {
+    public ContactDTO(String id, String name, String email, String phoneNumber, Set<SocialMediaAccountDTO> socialMediaAccounts, Set<String> groups, Set<SpecialDateDTO> specialDates, Date createdDate, Date lastModifiedDate) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -19,6 +22,8 @@ public final class ContactDTO {
         this.socialMediaAccounts = socialMediaAccounts;
         this.groups = groups;
         this.specialDates = specialDates;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     public String getId() {
@@ -75,5 +80,21 @@ public final class ContactDTO {
 
     public void setSpecialDates(Set<SpecialDateDTO> specialDates) {
         this.specialDates = specialDates;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

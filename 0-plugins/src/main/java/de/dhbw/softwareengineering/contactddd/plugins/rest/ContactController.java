@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +47,8 @@ public class ContactController {
     @GetMapping
     public ResponseEntity<List<ContactDTO>> getAllContacts(
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String order) {
+            @RequestParam(required = false, defaultValue = "asc") String order,
+            @RequestParam(required = false) String specialDateDescription) {
 
         Comparator<Contact> comparator;
         if ("name".equalsIgnoreCase(sortBy)) {
@@ -55,6 +57,16 @@ public class ContactController {
             comparator = Comparator.comparing(Contact::getEmail);
         } else if ("phoneNumber".equalsIgnoreCase(sortBy)) {
             comparator = Comparator.comparing(Contact::getPhoneNumber);
+        } else if ("createdDate".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(Contact::getCreatedDate);
+        } else if ("lastModifiedDate".equalsIgnoreCase(sortBy)) {
+            comparator = Comparator.comparing(Contact::getLastModifiedDate);
+        } else if ("specialDate".equalsIgnoreCase(sortBy) && specialDateDescription != null) {
+            comparator = Comparator.comparing(contact -> contact.getSpecialDates().stream()
+                    .filter(specialDate -> specialDate.getDescription().equalsIgnoreCase(specialDateDescription))
+                    .findFirst()
+                    .map(SpecialDate::getDate)
+                    .orElse(new Date(Long.MAX_VALUE)));
         } else {
             comparator = Comparator.comparing(contact -> contact.getContactId().id());
         }
@@ -70,6 +82,7 @@ public class ContactController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(contacts, HttpStatus.OK);
     }
+
 
     @GetMapping("/search")
     public ResponseEntity<List<ContactDTO>> searchContactsByName(@RequestParam String name) {
