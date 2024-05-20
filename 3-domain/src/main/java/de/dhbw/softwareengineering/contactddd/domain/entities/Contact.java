@@ -1,5 +1,6 @@
 package de.dhbw.softwareengineering.contactddd.domain.entities;
 
+import de.dhbw.softwareengineering.contactddd.domain.services.ContactValidator;
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
 import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;
 import de.dhbw.softwareengineering.contactddd.domain.values.SpecialDate;
@@ -40,38 +41,34 @@ public class Contact {
 
     public Contact(ContactId contactId, String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {
         this.contactId = contactId;
-        this.name = validateName(name);
-        this.email = validateEmail(email);
-        this.phoneNumber = validatePhoneNumber(phoneNumber);
+        this.name = ContactValidator.validateName(name);
+        this.email = ContactValidator.validateEmail(email);
+        this.phoneNumber = ContactValidator.validatePhoneNumber(phoneNumber);
         this.socialMediaAccounts = socialMediaAccounts != null ? new HashSet<>(socialMediaAccounts) : new HashSet<>();
         this.groups = groups != null ? new HashSet<>(groups) : new HashSet<>();
         this.specialDates = specialDates != null ? new HashSet<>(specialDates) : new HashSet<>();
         this.createdDate = new Date();
     }
 
-    public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {
-        this(new ContactId(), name, email, phoneNumber, socialMediaAccounts, groups, specialDates);
+    public Contact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<SpecialDate> specialDates) {
+        this(new ContactId(), name, email, phoneNumber, socialMediaAccounts, new HashSet<>(), specialDates);
     }
 
     public Contact() {
     }
 
-    public void updateContact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<String> groups, Set<SpecialDate> specialDates) {
-
+    public void updateContact(String name, String email, String phoneNumber, Set<SocialMediaAccount> socialMediaAccounts, Set<SpecialDate> specialDates) {
         if (name != null && !name.isEmpty()) {
-            this.name = validateName(name);
+            this.name = ContactValidator.validateName(name);
         }
         if (email != null && !email.isEmpty()) {
-            this.email = validateEmail(email);
+            this.email = ContactValidator.validateEmail(email);
         }
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            this.phoneNumber = validatePhoneNumber(phoneNumber);
+            this.phoneNumber = ContactValidator.validatePhoneNumber(phoneNumber);
         }
         if (socialMediaAccounts != null && !socialMediaAccounts.isEmpty()) {
             this.socialMediaAccounts = socialMediaAccounts;
-        }
-        if (groups != null && !groups.isEmpty()) {
-            this.groups = groups;
         }
         if (specialDates != null && !specialDates.isEmpty()) {
             this.specialDates = specialDates;
@@ -79,17 +76,16 @@ public class Contact {
     }
 
     public void setName(String newName) {
-        this.name = validateName(newName);
+        this.name = ContactValidator.validateName(newName);
     }
 
     public void setEmail(String newEmail) {
-        this.email = validateEmail(newEmail);
+        this.email = ContactValidator.validateEmail(newEmail);
     }
 
     public void setPhoneNumber(String newPhoneNumber) {
-        this.phoneNumber = validatePhoneNumber(newPhoneNumber);
+        this.phoneNumber = ContactValidator.validatePhoneNumber(newPhoneNumber);
     }
-
     public void addGroup(String group) {
         this.groups.add(group);
     }
@@ -156,26 +152,5 @@ public class Contact {
 
     public Date getLastModifiedDate() {
         return lastModifiedDate;
-    }
-
-    private String validateName(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty.");
-        }
-        return name;
-    }
-
-    private String validateEmail(String email) {
-        if (!Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$").matcher(email).matches()) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-        return email;
-    }
-
-    private String validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || phoneNumber.isEmpty()) {
-            throw new IllegalArgumentException("Phone number cannot be null or empty.");
-        }
-        return phoneNumber;
     }
 }

@@ -31,7 +31,7 @@ class ContactServiceTest {
     @Test
     void createContactShouldPersistContact() {
         // Arrange
-        CreateContactCommand command = new CreateContactCommand("Max Mustermann", "max@example.com", "1234567890", new HashSet<>(), new HashSet<>(), new HashSet<>());
+        CreateContactCommand command = new CreateContactCommand("Max Mustermann", "max@example.com", "1234567890", new HashSet<>(), new HashSet<>());
         Contact contact = new Contact("Max Mustermann", "max.mustermann@gmx.de", "1234567890", new HashSet<>(), new HashSet<>(), new HashSet<>());
         when(contactRepository.save(any(Contact.class))).thenReturn(contact);
 
@@ -65,7 +65,7 @@ class ContactServiceTest {
         when(contactRepository.findById(any(ContactId.class))).thenReturn(Optional.of(originalContact));
         when(contactRepository.save(any(Contact.class))).thenReturn(originalContact);
 
-        CreateContactCommand updateCommand = new CreateContactCommand("Max Mustermann Updated", "max.mustermann_updated@gmx.de", "0987654321", new HashSet<>(), new HashSet<>(), new HashSet<>());
+        CreateContactCommand updateCommand = new CreateContactCommand("Max Mustermann Updated", "max.mustermann_updated@gmx.de", "0987654321", new HashSet<>(), new HashSet<>());
 
         // Act
         Contact updatedContact = contactService.updateContact("123", updateCommand);

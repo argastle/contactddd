@@ -4,7 +4,6 @@ import de.dhbw.softwareengineering.contactddd.adapters.representations.contact.C
 import de.dhbw.softwareengineering.contactddd.adapters.representations.group.GroupDTO;
 import de.dhbw.softwareengineering.contactddd.adapters.representations.contact.ContactEntityToContactDTOMapper;
 import de.dhbw.softwareengineering.contactddd.adapters.representations.group.GroupEntityToGroupDTOMapper;
-import de.dhbw.softwareengineering.contactddd.application.services.CreateGroupCommand;
 import de.dhbw.softwareengineering.contactddd.application.services.GroupService;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Group;
@@ -34,8 +33,8 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<GroupDTO> createGroup(@RequestBody CreateGroupCommand command) {
-        Group createdGroup = groupService.createGroup(command);
+    public ResponseEntity<GroupDTO> createGroup(@RequestParam String groupName) {
+        Group createdGroup = groupService.createGroup(groupName);
         return new ResponseEntity<>(groupToDTO.apply(createdGroup), HttpStatus.CREATED);
     }
 

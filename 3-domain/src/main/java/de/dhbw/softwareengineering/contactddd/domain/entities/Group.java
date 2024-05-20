@@ -13,9 +13,9 @@ public class Group {
     private String name;
     private Set<ContactId> contactIds;
 
-    public Group(String name, Set<ContactId> contactIds) {
+    public Group(String name) {
         this.name = name;
-        this.contactIds = contactIds != null ? new HashSet<>(contactIds) : new HashSet<>();
+        this.contactIds = new HashSet<>();
     }
 
     public Group(){

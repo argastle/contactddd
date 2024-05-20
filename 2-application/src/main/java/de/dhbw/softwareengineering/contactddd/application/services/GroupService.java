@@ -8,9 +8,7 @@ import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,13 +24,8 @@ public class GroupService {
         this.groupRepository = groupRepository;
     }
 
-    public Group createGroup(CreateGroupCommand command) {
-        Set<ContactId> contactIds = Optional.ofNullable(command.getContactIdInfos())
-                .orElse(Set.of())
-                .stream()
-                .map(ContactId::new)
-                .collect(Collectors.toSet());
-        Group newGroup = new Group(command.getName(), contactIds);
+    public Group createGroup(String groupName) {
+        Group newGroup = new Group(groupName);
         return groupRepository.save(newGroup);
     }
 
@@ -54,7 +47,7 @@ public class GroupService {
         contact.addGroup(groupName);
         contactRepository.save(contact);
 
-        Group group = groupRepository.findById(groupName).orElseGet(() -> new Group(groupName, new HashSet<>()));
+        Group group = groupRepository.findById(groupName).orElseGet(() -> new Group(groupName));
         group.addContact(contact.getContactId());
         groupRepository.save(group);
     }

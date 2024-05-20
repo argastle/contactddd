@@ -11,15 +11,13 @@ public final class CreateContactCommand {
     private String email;
     private String phoneNumber;
     private Set<SocialMediaAccountInfo> socialMediaAccountsInfos;
-    private Set<String> groups;
     private Set<SpecialDateInfo> specialDatesInfos;
 
-    public CreateContactCommand(String name, String email, String phoneNumber, Set<SocialMediaAccountInfo> socialMediaAccountsInfos, Set<String> groups, Set<SpecialDateInfo> specialDatesInfos) {
+    public CreateContactCommand(String name, String email, String phoneNumber, Set<SocialMediaAccountInfo> socialMediaAccountsInfos, Set<SpecialDateInfo> specialDatesInfos) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.socialMediaAccountsInfos = socialMediaAccountsInfos;
-        this.groups = groups;
         this.specialDatesInfos = specialDatesInfos;
     }
 
@@ -53,14 +51,6 @@ public final class CreateContactCommand {
 
     public void setSocialMediaAccountsInfos(Set<SocialMediaAccountInfo> socialMediaAccountsInfos) {
         this.socialMediaAccountsInfos = socialMediaAccountsInfos;
-    }
-
-    public Set<String> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(Set<String> groups) {
-        this.groups = groups;
     }
 
     public Set<SpecialDateInfo> getSpecialDatesInfos() {

@@ -1,6 +1,7 @@
 package de.dhbw.softwareengineering.contactddd.application.services;
 
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
+import de.dhbw.softwareengineering.contactddd.domain.exceptions.ContactNotFoundException;
 import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;
 import de.dhbw.softwareengineering.contactddd.domain.repositories.IContactRepository;
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
@@ -34,38 +35,38 @@ public class ContactService {
                 .stream()
                 .map(info -> new SpecialDate(info.getDate(), info.getDescription()))
                 .collect(Collectors.toSet());
-        Contact newContact = new Contact(command.getName(), command.getEmail(), command.getPhoneNumber(), socialMediaAccounts, command.getGroups(), specialDates);
+        Contact newContact = new Contact(command.getName(), command.getEmail(), command.getPhoneNumber(), socialMediaAccounts, specialDates);
         return contactRepository.save(newContact);
     }
 
-    public void updateContactName(String contactId, String newName) {
+    public Contact updateContactName(String contactId, String newName) {
         Contact contact = getContactOrThrow(contactId);
         contact.setName(newName);
-        contactRepository.save(contact);
+        return contactRepository.save(contact);
     }
 
-    public void updateContactEmail(String contactId, String newEmail) {
+    public Contact updateContactEmail(String contactId, String newEmail) {
         Contact contact = getContactOrThrow(contactId);
         contact.setEmail(newEmail);
-        contactRepository.save(contact);
+        return contactRepository.save(contact);
     }
 
-    public void updateContactPhoneNumber(String contactId, String newPhoneNumber) {
+    public Contact updateContactPhoneNumber(String contactId, String newPhoneNumber) {
         Contact contact = getContactOrThrow(contactId);
         contact.setPhoneNumber(newPhoneNumber);
-        contactRepository.save(contact);
+        return contactRepository.save(contact);
     }
 
-    public void addSpecialDateToContact(String contactId, SpecialDate specialDate) {
+    public Contact addSpecialDateToContact(String contactId, SpecialDate specialDate) {
         Contact contact = getContactOrThrow(contactId);
         contact.addSpecialDate(specialDate);
-        contactRepository.save(contact);
+        return contactRepository.save(contact);
     }
 
-    public void removeSpecialDateFromContact(String contactId, String description) {
+    public Contact removeSpecialDateFromContact(String contactId, String description) {
         Contact contact = getContactOrThrow(contactId);
         contact.removeSpecialDateByDescription(description);
-        contactRepository.save(contact);
+        return contactRepository.save(contact);
     }
 
 
@@ -96,7 +97,7 @@ public class ContactService {
                     .stream()
                     .map(info -> new SpecialDate(info.getDate(), info.getDescription()))
                     .collect(Collectors.toSet());
-            existingContact.updateContact(command.getName(), command.getEmail(), command.getPhoneNumber(), socialMediaAccounts, command.getGroups(), specialDates);
+            existingContact.updateContact(command.getName(), command.getEmail(), command.getPhoneNumber(), socialMediaAccounts, specialDates);
             return contactRepository.save(existingContact);
         } else {
             throw new IllegalArgumentException("Contact with id " + id + " not found.");
@@ -108,7 +109,7 @@ public class ContactService {
     }
 
     private Contact getContactOrThrow(String contactId) {
-        return contactRepository.findById(new ContactId(contactId)).orElseThrow(() -> new IllegalArgumentException("Contact not found with ID: " + contactId));
+        return contactRepository.findById(new ContactId(contactId)).orElseThrow(() -> new ContactNotFoundException("Contact not found with ID: " + contactId));
     }
 
 }

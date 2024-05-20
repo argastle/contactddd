@@ -5,6 +5,7 @@ import de.dhbw.softwareengineering.contactddd.adapters.representations.contact.C
 import de.dhbw.softwareengineering.contactddd.application.services.ContactService;
 import de.dhbw.softwareengineering.contactddd.application.services.CreateContactCommand;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
+import de.dhbw.softwareengineering.contactddd.domain.exceptions.ContactNotFoundException;
 import de.dhbw.softwareengineering.contactddd.domain.values.SpecialDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,39 +101,59 @@ public class ContactController {
         try {
             Contact updatedContact = contactService.updateContact(id, command);
             return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (ContactNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PatchMapping("/{contactId}/updateName")
-    public ResponseEntity<Void> updateContactName(@PathVariable String contactId, @RequestParam String newName) {
-        contactService.updateContactName(contactId, newName);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ContactDTO> updateContactName(@PathVariable String contactId, @RequestParam String newName) {
+        try {
+            Contact updatedContact = contactService.updateContactName(contactId, newName);
+            return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
+        } catch (ContactNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping("/{contactId}/updateEmail")
-    public ResponseEntity<Void> updateContactEmail(@PathVariable String contactId, @RequestParam String newEmail) {
-        contactService.updateContactEmail(contactId, newEmail);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ContactDTO> updateContactEmail(@PathVariable String contactId, @RequestParam String newEmail) {
+        try {
+            Contact updatedContact = contactService.updateContactEmail(contactId, newEmail);
+            return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
+        } catch (ContactNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping("/{contactId}/updatePhoneNumber")
-    public ResponseEntity<Void> updateContactPhoneNumber(@PathVariable String contactId, @RequestParam String newPhoneNumber) {
-        contactService.updateContactPhoneNumber(contactId, newPhoneNumber);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ContactDTO> updateContactPhoneNumber(@PathVariable String contactId, @RequestParam String newPhoneNumber) {
+        try {
+            Contact updatedContact = contactService.updateContactPhoneNumber(contactId, newPhoneNumber);
+            return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
+        } catch (ContactNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping("/{contactId}/addSpecialDate")
-    public ResponseEntity<Void> addSpecialDateToContact(@PathVariable String contactId, @RequestBody SpecialDate specialDate) {
-        contactService.addSpecialDateToContact(contactId, specialDate);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ContactDTO> addSpecialDateToContact(@PathVariable String contactId, @RequestBody SpecialDate specialDate) {
+        try {
+            Contact updatedContact = contactService.addSpecialDateToContact(contactId, specialDate);
+            return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
+        } catch (ContactNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping("/{contactId}/removeSpecialDate")
-    public ResponseEntity<Void> removeSpecialDateFromContact(@PathVariable String contactId, @RequestParam String description) {
-        contactService.removeSpecialDateFromContact(contactId, description);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ContactDTO> removeSpecialDateFromContact(@PathVariable String contactId, @RequestParam String description) {
+        try {
+            Contact updatedContact = contactService.removeSpecialDateFromContact(contactId, description);
+            return new ResponseEntity<>(contactToDTO.apply(updatedContact), HttpStatus.OK);
+        } catch (ContactNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -141,6 +162,6 @@ public class ContactController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         contactService.deleteContactById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
