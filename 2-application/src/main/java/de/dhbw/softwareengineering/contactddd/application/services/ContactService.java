@@ -83,29 +83,25 @@ public class ContactService {
     }
 
     public Contact updateContact(String id, CreateContactCommand command) {
-        ContactId contactId = new ContactId(id);
-        Optional<Contact> contactOptional = contactRepository.findById(contactId);
-        if (contactOptional.isPresent()) {
-            Contact existingContact = contactOptional.get();
-            Set<SocialMediaAccount> socialMediaAccounts = Optional.ofNullable(command.getSocialMediaAccountsInfos())
-                    .orElse(Set.of())
-                    .stream()
-                    .map(info -> new SocialMediaAccount(info.getName(), info.getPlatform()))
-                    .collect(Collectors.toSet());
-            Set<SpecialDate> specialDates = Optional.ofNullable(command.getSpecialDatesInfos())
-                    .orElse(Set.of())
-                    .stream()
-                    .map(info -> new SpecialDate(info.getDate(), info.getDescription()))
-                    .collect(Collectors.toSet());
-            existingContact.updateContact(command.getName(), command.getEmail(), command.getPhoneNumber(), socialMediaAccounts, specialDates);
-            return contactRepository.save(existingContact);
-        } else {
-            throw new IllegalArgumentException("Contact with id " + id + " not found.");
-        }
+
+        Contact contact = getContactOrThrow(id);
+        Set<SocialMediaAccount> socialMediaAccounts = Optional.ofNullable(command.getSocialMediaAccountsInfos())
+                .orElse(Set.of())
+                .stream()
+                .map(info -> new SocialMediaAccount(info.getName(), info.getPlatform()))
+                .collect(Collectors.toSet());
+        Set<SpecialDate> specialDates = Optional.ofNullable(command.getSpecialDatesInfos())
+                .orElse(Set.of())
+                .stream()
+                .map(info -> new SpecialDate(info.getDate(), info.getDescription()))
+                .collect(Collectors.toSet());
+        contact.updateContact(command.getName(), command.getEmail(), command.getPhoneNumber(), socialMediaAccounts, specialDates);
+        return contactRepository.save(contact);
     }
 
-    public void deleteContactById(String id) {
-        contactRepository.deleteContact(new ContactId(id));
+    public void deleteContactById(String contactId) {
+        Contact contact = getContactOrThrow(contactId);
+        contactRepository.deleteContact(contact.getContactId());
     }
 
     private Contact getContactOrThrow(String contactId) {

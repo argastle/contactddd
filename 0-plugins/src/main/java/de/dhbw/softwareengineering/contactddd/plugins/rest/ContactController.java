@@ -158,10 +158,11 @@ public class ContactController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContactById(@PathVariable String id) {
-        if (contactService.findContactById(id).isEmpty()) {
+        try {
+            contactService.deleteContactById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ContactNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        contactService.deleteContactById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

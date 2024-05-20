@@ -2,6 +2,8 @@ package de.dhbw.softwareengineering.contactddd.application.services;
 
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Group;
+import de.dhbw.softwareengineering.contactddd.domain.exceptions.ContactNotFoundException;
+import de.dhbw.softwareengineering.contactddd.domain.exceptions.GroupNotFoundException;
 import de.dhbw.softwareengineering.contactddd.domain.repositories.IContactRepository;
 import de.dhbw.softwareengineering.contactddd.domain.repositories.IGroupRepository;
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
@@ -30,16 +32,14 @@ public class GroupService {
     }
 
     public void deleteGroup(String groupName) {
-        if (groupRepository.findById(groupName).isPresent()) {
-            Group group = groupRepository.findById(groupName).get();
-            Set<ContactId> contactIds = group.getContactIds();
-            for (ContactId contactId : contactIds) {
-                Contact contact = getContactOrThrow(contactId);
-                contact.removeGroup(groupName);
-                contactRepository.save(contact);
-            }
-            groupRepository.deleteById(groupName);
+        Group group = getGroupOrThrow(groupName);
+        Set<ContactId> contactIds = group.getContactIds();
+        for (ContactId contactId : contactIds) {
+            Contact contact = getContactOrThrow(contactId);
+            contact.removeGroup(groupName);
+            contactRepository.save(contact);
         }
+        groupRepository.deleteById(groupName);
     }
 
     public void addContactToGroup(String contactId, String groupName) {
@@ -57,14 +57,12 @@ public class GroupService {
         contact.removeGroup(groupName);
         contactRepository.save(contact);
 
-        Group group = groupRepository.findById(groupName).orElse(null);
-        if (group != null) {
-            group.removeContact(contact.getContactId());
-            if (group.getContactIds().isEmpty()) {
-                groupRepository.deleteById(groupName);
-            } else {
-                groupRepository.save(group);
-            }
+        Group group = getGroupOrThrow(groupName);
+        group.removeContact(contact.getContactId());
+        if (group.getContactIds().isEmpty()) {
+            groupRepository.deleteById(groupName);
+        } else {
+            groupRepository.save(group);
         }
     }
 
@@ -73,15 +71,19 @@ public class GroupService {
     }
 
     public List<Contact> getContactsInGroup(String groupName) {
-        return groupRepository.findById(groupName)
-                .map(group -> group.getContactIds().stream()
-                        .map(this::getContactOrThrow)
-                        .collect(Collectors.toList()))
-                .orElse(List.of());
+        Group group = getGroupOrThrow(groupName);
+        return group.getContactIds().stream()
+                .map(this::getContactOrThrow)
+                .collect(Collectors.toList());
     }
 
     private Contact getContactOrThrow(ContactId contactId) {
         return contactRepository.findById(contactId)
-                .orElseThrow(() -> new IllegalArgumentException("Contact not found with ID: " + contactId));
+                .orElseThrow(() -> new ContactNotFoundException("Contact not found with ID: " + contactId));
+    }
+
+    private Group getGroupOrThrow(String groupName) {
+        return groupRepository.findById(groupName)
+                .orElseThrow(() -> new GroupNotFoundException("Group not found with Name: " + groupName));
     }
 }

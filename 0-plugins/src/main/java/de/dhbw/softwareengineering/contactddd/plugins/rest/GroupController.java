@@ -7,6 +7,8 @@ import de.dhbw.softwareengineering.contactddd.adapters.representations.group.Gro
 import de.dhbw.softwareengineering.contactddd.application.services.GroupService;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Group;
+import de.dhbw.softwareengineering.contactddd.domain.exceptions.ContactNotFoundException;
+import de.dhbw.softwareengineering.contactddd.domain.exceptions.GroupNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +42,12 @@ public class GroupController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteGroup(@RequestParam String groupName) {
-        groupService.deleteGroup(groupName);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            groupService.deleteGroup(groupName);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (GroupNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PatchMapping("/{contactId}/addGroup")
@@ -52,8 +58,12 @@ public class GroupController {
 
     @PatchMapping("/{contactId}/removeGroup")
     public ResponseEntity<Void> removeContactFromGroup(@PathVariable String contactId, @RequestParam String groupName) {
-        groupService.removeContactFromGroup(contactId, groupName);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            groupService.removeContactFromGroup(contactId, groupName);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (GroupNotFoundException | ContactNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping
@@ -67,11 +77,15 @@ public class GroupController {
 
     @GetMapping("/{groupName}/contacts")
     public ResponseEntity<List<ContactDTO>> getContactsInGroup(@PathVariable String groupName) {
-        List<Contact> contacts = groupService.getContactsInGroup(groupName);
-        List<ContactDTO> contactDTOs = contacts.stream()
-                .map(contactToDTO)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(contactDTOs, HttpStatus.OK);
+        try {
+            List<Contact> contacts = groupService.getContactsInGroup(groupName);
+            List<ContactDTO> contactDTOs = contacts.stream()
+                    .map(contactToDTO)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(contactDTOs, HttpStatus.OK);
+        } catch (GroupNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
 
