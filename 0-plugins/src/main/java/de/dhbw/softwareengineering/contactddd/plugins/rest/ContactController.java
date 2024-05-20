@@ -1,7 +1,7 @@
 package de.dhbw.softwareengineering.contactddd.plugins.rest;
 
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.ContactDTO;
-import de.dhbw.softwareengineering.contactddd.adapters.representations.mappers.ContactEntityToContactDTOMapper;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.contact.ContactDTO;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.contact.ContactEntityToContactDTOMapper;
 import de.dhbw.softwareengineering.contactddd.application.services.ContactService;
 import de.dhbw.softwareengineering.contactddd.application.services.CreateContactCommand;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
@@ -68,7 +68,7 @@ public class ContactController {
                     .map(SpecialDate::getDate)
                     .orElse(new Date(Long.MAX_VALUE)));
         } else {
-            comparator = Comparator.comparing(contact -> contact.getContactId().id());
+            comparator = Comparator.comparing(contact -> contact.getContactId().getId());
         }
 
         if ("desc".equalsIgnoreCase(order)) {
@@ -93,21 +93,6 @@ public class ContactController {
                     .collect(Collectors.toList());
             return new ResponseEntity<>(contactDTOs, HttpStatus.OK);
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-
-    @GetMapping("/groups")
-    public ResponseEntity<List<ContactDTO>> getContactsByGroups(@RequestParam List<String> groups, @RequestParam(defaultValue = "or") String mode) {
-        List<Contact> contacts;
-        if ("and".equalsIgnoreCase(mode)) {
-            contacts = contactService.findContactsByAllGroups(groups);
-        } else {
-            contacts = contactService.findContactsByAnyGroup(groups);
-        }
-        List<ContactDTO> contactDTOs = contacts.stream()
-                .map(contactToDTO)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(contactDTOs, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -135,18 +120,6 @@ public class ContactController {
     @PatchMapping("/{contactId}/updatePhoneNumber")
     public ResponseEntity<Void> updateContactPhoneNumber(@PathVariable String contactId, @RequestParam String newPhoneNumber) {
         contactService.updateContactPhoneNumber(contactId, newPhoneNumber);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PatchMapping("/{contactId}/addGroup")
-    public ResponseEntity<Void> addGroupToContact(@PathVariable String contactId, @RequestParam String group) {
-        contactService.addGroupToContact(contactId, group);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PatchMapping("/{contactId}/removeGroup")
-    public ResponseEntity<Void> removeGroupFromContact(@PathVariable String contactId, @RequestParam String group) {
-        contactService.removeGroupFromContact(contactId, group);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

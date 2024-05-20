@@ -1,4 +1,4 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.dto;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.socialmediaaccount;
 
 import de.dhbw.softwareengineering.contactddd.domain.values.Platform;
 

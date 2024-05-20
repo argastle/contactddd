@@ -1,4 +1,4 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.dto;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.specialdate;
 
 import java.util.Date;
 

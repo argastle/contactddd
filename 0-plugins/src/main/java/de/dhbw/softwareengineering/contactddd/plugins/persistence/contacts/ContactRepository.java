@@ -1,4 +1,4 @@
-package de.dhbw.softwareengineering.contactddd.plugins.persistence;
+package de.dhbw.softwareengineering.contactddd.plugins.persistence.contacts;
 
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import de.dhbw.softwareengineering.contactddd.domain.repositories.IContactRepository;
@@ -46,13 +46,4 @@ public class ContactRepository implements IContactRepository {
         dataContactRepository.deleteById(contactId);
     }
 
-    @Override
-    public List<Contact> findContactsByAnyGroup(List<String> groups) {
-        return dataContactRepository.findByAnyGroup(groups);
-    }
-
-    @Override
-    public List<Contact> findContactsByAllGroups(List<String> groups) {
-        return dataContactRepository.findByAllGroups(groups);
-    }
 }

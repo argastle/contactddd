@@ -56,18 +56,6 @@ public class ContactService {
         contactRepository.save(contact);
     }
 
-    public void addGroupToContact(String contactId, String group) {
-        Contact contact = getContactOrThrow(contactId);
-        contact.addGroup(group);
-        contactRepository.save(contact);
-    }
-
-    public void removeGroupFromContact(String contactId, String group) {
-        Contact contact = getContactOrThrow(contactId);
-        contact.removeGroup(group);
-        contactRepository.save(contact);
-    }
-
     public void addSpecialDateToContact(String contactId, SpecialDate specialDate) {
         Contact contact = getContactOrThrow(contactId);
         contact.addSpecialDate(specialDate);
@@ -87,14 +75,6 @@ public class ContactService {
 
     public Optional<List<Contact>> findContactByName(String name) {
         return contactRepository.findByName(name);
-    }
-
-    public List<Contact> findContactsByAnyGroup(List<String> group) {
-        return contactRepository.findContactsByAnyGroup(group);
-    }
-
-    public List<Contact> findContactsByAllGroups(List<String> groups) {
-        return contactRepository.findContactsByAllGroups(groups);
     }
 
     public List<Contact> findAllContacts() {

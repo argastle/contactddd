@@ -1,4 +1,7 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.dto;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.contact;
+
+import de.dhbw.softwareengineering.contactddd.adapters.representations.socialmediaaccount.SocialMediaAccountDTO;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.specialdate.SpecialDateDTO;
 
 import java.util.Date;
 import java.util.Set;

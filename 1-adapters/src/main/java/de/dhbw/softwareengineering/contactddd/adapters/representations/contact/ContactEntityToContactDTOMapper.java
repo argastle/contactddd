@@ -1,8 +1,9 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.mappers;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.contact;
 
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.ContactDTO;
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.SocialMediaAccountDTO;
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.SpecialDateDTO;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.socialmediaaccount.SocialMediaAccountDTO;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.specialdate.SpecialDateDTO;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.socialmediaaccount.SocialMediaAccountEntityToSocialMediaAccountDTOMapper;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.specialdate.SpecialDateEntityToSpecialDateDTOMapper;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class ContactEntityToContactDTOMapper implements Function<Contact, Contac
                 .map(new SpecialDateEntityToSpecialDateDTOMapper()::map)
                 .collect(Collectors.toSet());
         return new ContactDTO(
-                contact.getContactId().id(),
+                contact.getContactId().getId(),
                 contact.getName(),
                 contact.getEmail(),
                 contact.getPhoneNumber(),

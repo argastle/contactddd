@@ -1,6 +1,5 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.mappers;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.socialmediaaccount;
 
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.SocialMediaAccountDTO;
 import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;
 import org.springframework.stereotype.Component;
 

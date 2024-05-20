@@ -1,6 +1,7 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.mappers;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.contact;
 
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.ContactDTO;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.socialmediaaccount.SocialMediaAccountDTOToSocialMediaAccountEntityMapper;
+import de.dhbw.softwareengineering.contactddd.adapters.representations.specialdate.SpecialDateDTOToSpecialDateEntityMapper;
 import de.dhbw.softwareengineering.contactddd.domain.entities.Contact;
 import de.dhbw.softwareengineering.contactddd.domain.values.ContactId;
 import de.dhbw.softwareengineering.contactddd.domain.values.SocialMediaAccount;

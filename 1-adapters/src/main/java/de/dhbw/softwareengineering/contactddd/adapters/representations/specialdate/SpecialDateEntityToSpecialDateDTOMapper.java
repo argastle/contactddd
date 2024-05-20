@@ -1,6 +1,5 @@
-package de.dhbw.softwareengineering.contactddd.adapters.representations.mappers;
+package de.dhbw.softwareengineering.contactddd.adapters.representations.specialdate;
 
-import de.dhbw.softwareengineering.contactddd.adapters.representations.dto.SpecialDateDTO;
 import de.dhbw.softwareengineering.contactddd.domain.values.SpecialDate;
 
 import java.util.function.Function;
